@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<title>Mahsulotlar — Admin panel</title>
+{% include 'admin/partials/style.html' %}
+</head>
+<body>
+{% include 'admin/partials/nav.html' %}
+<div class="container">
+  <h1>📦 Mahsulotlar ({{ products|length }})</h1>
+  {% if products|length == 0 %}
+    <p class="empty">Hozircha mahsulot qo'shilmagan. Yuqoridan "+ Yangi mahsulot" tugmasini bosing.</p>
+  {% else %}
+  <table>
+    <tr>
+      <th>Model</th><th>Kategoriya</th><th>Brend</th><th>Narx</th><th>Holati</th><th>Aksiya</th><th></th>
+    </tr>
+    {% for p in products %}
+    <tr>
+      <td>{{ p.model }}</td>
+      <td>{{ p.category_name }}</td>
+      <td>{{ p.brand_name }}</td>
+      <td>{{ "{:,}".format(p.price).replace(",", " ") + " so'm" if p.price else "-" }}</td>
+      <td><span class="badge {{ 'ok' if p.in_stock else 'no' }}">{{ 'Bor' if p.in_stock else "Yo'q" }}</span></td>
+      <td>{{ '🎁' if p.is_promo else '-' }}</td>
+      <td class="row-actions">
+        <a class="btn small" href="{{ url_for('admin.edit_product', product_id=p.id) }}">Tahrirlash</a>
+        <form class="inline" method="POST" action="{{ url_for('admin.delete_product', product_id=p.id) }}" onsubmit="return confirm('O\'chirilsinmi?')">
+          <button class="btn small danger" type="submit">O'chirish</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% endif %}
+</div>
+</body>
+</html>

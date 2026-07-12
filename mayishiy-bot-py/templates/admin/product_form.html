@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<title>{{ 'Tahrirlash' if product else 'Yangi mahsulot' }} — Admin panel</title>
+{% include 'admin/partials/style.html' %}
+</head>
+<body>
+{% include 'admin/partials/nav.html' %}
+<div class="container">
+  <h1>{{ "✏️ Mahsulotni tahrirlash" if product else "➕ Yangi mahsulot qo'shish" }}</h1>
+
+  <div class="card">
+    <form method="POST">
+      <label>Brend</label>
+      <select name="brand_id" required>
+        {% for b in brands %}
+          <option value="{{ b.id }}" {{ 'selected' if product and product.brand_id == b.id else '' }}>
+            {{ b.category_name }} — {{ b.name }}
+          </option>
+        {% endfor %}
+      </select>
+
+      <label>Model nomi</label>
+      <input type="text" name="model" required placeholder="Masalan: RF-350 Silver"
+             value="{{ product.model if product else '' }}">
+
+      <label>Narxi (so'mda, faqat raqam)</label>
+      <input type="number" name="price" placeholder="Masalan: 4500000"
+             value="{{ product.price if product else '' }}">
+
+      <label>Texnik xususiyatlari (har bir qator: Nomi: Qiymati)</label>
+      <textarea name="specs_text" placeholder="Hajmi: 350L&#10;Rangi: Kumush&#10;Quvvati: 150W">{% if product and product.specs %}{% for k, v in product.specs.items() %}{{ k }}: {{ v }}
+{% endfor %}{% endif %}</textarea>
+
+      <label>Tavsif (ixtiyoriy)</label>
+      <textarea name="description" placeholder="Qo'shimcha izoh...">{{ product.description if product else '' }}</textarea>
+
+      <label>Rasm URL manzili</label>
+      <input type="url" name="image_url" placeholder="https://..."
+             value="{{ product.image_url if product else '' }}">
+
+      <label style="display:flex; align-items:center; gap:8px; margin-top:16px;">
+        <input type="checkbox" name="in_stock" style="width:auto;" {{ 'checked' if (not product or product.in_stock) else '' }}>
+        Omborda bor
+      </label>
+      <label style="display:flex; align-items:center; gap:8px;">
+        <input type="checkbox" name="is_promo" style="width:auto;" {{ 'checked' if (product and product.is_promo) else '' }}>
+        Aksiyada
+      </label>
+
+      <button class="btn" style="margin-top:16px;" type="submit">
+        {{ 'Saqlash' if product else "Qo'shish" }}
+      </button>
+      <a class="btn" style="background:#888; margin-top:16px; margin-left:8px;" href="{{ url_for('admin.products_list') }}">Bekor qilish</a>
+    </form>
+  </div>
+</div>
+</body>
+</html>

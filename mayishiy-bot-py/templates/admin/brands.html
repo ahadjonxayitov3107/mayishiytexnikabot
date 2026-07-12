@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<title>Brendlar — Admin panel</title>
+{% include 'admin/partials/style.html' %}
+</head>
+<body>
+{% include 'admin/partials/nav.html' %}
+<div class="container">
+  <h1>🏷 Brendlar</h1>
+
+  <div class="card">
+    <form method="POST">
+      <label>Kategoriya</label>
+      <select name="category_id" required>
+        {% for c in categories %}
+          <option value="{{ c.id }}">{{ c.name }}</option>
+        {% endfor %}
+      </select>
+      <label>Brend nomi</label>
+      <input type="text" name="name" required placeholder="Masalan: Artel">
+      <button class="btn" style="margin-top:14px;" type="submit">Qo'shish</button>
+    </form>
+  </div>
+
+  <table>
+    <tr><th>Brend</th><th>Kategoriya</th><th></th></tr>
+    {% for b in brands %}
+    <tr>
+      <td>{{ b.name }}</td>
+      <td>{{ b.category_name }}</td>
+      <td>
+        <form method="POST" action="{{ url_for('admin.delete_brand', brand_id=b.id) }}" onsubmit="return confirm('O\'chirilsinmi?')">
+          <button class="btn small danger" type="submit">O'chirish</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+</body>
+</html>

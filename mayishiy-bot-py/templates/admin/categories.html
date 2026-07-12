@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<title>Kategoriyalar — Admin panel</title>
+{% include 'admin/partials/style.html' %}
+</head>
+<body>
+{% include 'admin/partials/nav.html' %}
+<div class="container">
+  <h1>🗂 Kategoriyalar</h1>
+
+  <div class="card">
+    <form method="POST">
+      <label>Nomi</label>
+      <input type="text" name="name" required placeholder="Masalan: Muzlatgichlar">
+      <label>Tartib raqami (ixtiyoriy)</label>
+      <input type="number" name="sort_order" value="0">
+      <button class="btn" style="margin-top:14px;" type="submit">Qo'shish</button>
+    </form>
+  </div>
+
+  <table>
+    <tr><th>Nomi</th><th>Tartib</th><th></th></tr>
+    {% for c in categories %}
+    <tr>
+      <td>{{ c.name }}</td>
+      <td>{{ c.sort_order }}</td>
+      <td>
+        <form method="POST" action="{{ url_for('admin.delete_category', cat_id=c.id) }}" onsubmit="return confirm('O\'chirilsinmi? Ichidagi barcha brend/mahsulotlar ham o\'chadi!')">
+          <button class="btn small danger" type="submit">O'chirish</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+</body>
+</html>
